@@ -20,7 +20,7 @@ pipeline {
                         $class: 'GitSCM',
                         branches: [[name: '*/main']],
                         userRemoteConfigs: [[
-                            url: 'https://github.com/yourusername/assignment1-node-app.git',
+                            url: 'https://github.com/T-nobu/DSO101.git',
                             credentialsId: 'github-credentials'
                         ]]
                     ]
