@@ -12,7 +12,13 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
+# Copy and use the .env.production file during build
+COPY .env.production .env.production
+
+# Set build-time environment variable for React
+ENV REACT_APP_API_URL=https://app-backend-8l9n.onrender.com
+
+# Build the application with the API URL
 RUN npm run build
 
 # Stage 2: Serve with Nginx

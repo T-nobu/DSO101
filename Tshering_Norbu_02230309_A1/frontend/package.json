@@ -17,7 +17,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "docker:build": "docker build -t tnobu/app-frontend:latest -t tnobu/app-frontend:v1.0 .",
+    "docker:push": "docker push tnobu/app-frontend:latest && docker push tnobu/app-frontend:v1.0",
+    "docker:buildpush": "npm run docker:build && npm run docker:push"
   },
   "eslintConfig": {
     "extends": [

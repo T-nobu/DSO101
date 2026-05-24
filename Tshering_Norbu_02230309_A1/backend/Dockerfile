@@ -1,18 +1,29 @@
-﻿FROM node:18-alpine
+﻿# Build stage
+FROM node:18-alpine AS builder
 
-# Install SQLite (pre-built, no compilation needed)
-RUN apk add --no-cache sqlite
+# Install build dependencies for better-sqlite3
+RUN apk add --no-cache build-base python3
 
 WORKDIR /app
 
-# Copy package files
+# Copy only package files first
 COPY package*.json ./
 
-# Install dependencies (no compilation needed)
-RUN npm ci --only=production
+# Install all dependencies - this runs in Linux environment
+RUN npm ci --verbose
 
-# Copy application code
+# Copy the rest of the application code (node_modules excluded via .dockerignore)
 COPY . .
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy installed node_modules and source from builder
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/server.js ./
 
 # Create directory for SQLite database
 RUN mkdir -p /app/data && chmod 777 /app/data
