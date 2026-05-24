@@ -20,6 +20,3 @@ services:
     runtime: docker
     name: fe-todo
     dockerfilePath: ./frontend/Dockerfile
-    envVars:
-      - key: REACT_APP_API_URL
-        value: https://be-todo.onrender.com
