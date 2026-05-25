@@ -1,0 +1,77 @@
+name: CI/CD - Build, Push to Docker Hub, and Deploy to Render
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Step 2: Set up Docker Buildx for better build performance
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Log in to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 4: Build and push backend Docker image
+      - name: Build and Push Backend Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Tshering_Norbu_02230309_A2/backend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/todo-app-backend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/todo-app-backend:${{ github.run_number }}
+
+      # Step 5: Build and push frontend Docker image
+      - name: Build and Push Frontend Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Tshering_Norbu_02230309_A2/frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/todo-app-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/todo-app-frontend:${{ github.run_number }}
+
+      # Step 6: Trigger Render Backend Deployment Webhook
+      - name: Trigger Render Backend Deployment
+        run: |
+          curl -X POST "${{ secrets.RENDER_BACKEND_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache": true}'
+        if: success()
+        continue-on-error: true
+
+      # Step 7: Trigger Render Frontend Deployment Webhook
+      - name: Trigger Render Frontend Deployment
+        run: |
+          curl -X POST "${{ secrets.RENDER_FRONTEND_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{"clearCache": true}'
+        if: success()
+        continue-on-error: true
+
+      # Step 8: Workflow Summary
+      - name: Workflow Summary
+        if: always()
+        run: |
+          echo "## CI/CD Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Backend Image**: ${{ secrets.DOCKERHUB_USERNAME }}/todo-app-backend:${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Frontend Image**: ${{ secrets.DOCKERHUB_USERNAME }}/todo-app-frontend:${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Render Backend Deployment**: Triggered" >> $GITHUB_STEP_SUMMARY
+          echo "- **Render Frontend Deployment**: Triggered" >> $GITHUB_STEP_SUMMARY

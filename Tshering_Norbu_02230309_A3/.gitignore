@@ -1,0 +1,46 @@
+# Node modules and dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Environment variables (never commit)
+.env
+.env.local
+.env.*.local
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Logs
+logs/
+*.log
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Temp files
+tmp/
+temp/
+
+# Dependencies lock files (optional - usually commit these)
+# package-lock.json
+# yarn.lock
