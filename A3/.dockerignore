@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+README.md
+QUICKSTART.md
+IMPLEMENTATION_CHECKLIST.md
+coverage
+*.sqlite
+*.sqlite3
+.env
+.env.*
