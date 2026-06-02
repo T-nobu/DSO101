@@ -1,0 +1,25 @@
+{
+  "name": "a4-todo-api",
+  "version": "1.0.0",
+  "description": "Todo API with CI/CD pipeline — DSO101 Assignment 4",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest --ci --coverage --forceExit",
+    "build": "echo \"Node.js backend — no compile step required\"",
+    "docker:build": "docker build -t a4-todo-app:local .",
+    "docker:run": "docker run -p 3000:3000 -e DOCKER_ENV=true a4-todo-app:local"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  }
+}
